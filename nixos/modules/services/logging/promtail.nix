@@ -22,6 +22,13 @@ in {
       '';
     };
 
+    environmentFile = mkOption {
+      type = types.nullOr types.path;
+      default = null;
+      description = lib.mdDoc ''
+      '';  
+    };
+
     extraFlags = mkOption {
       type = listOf str;
       default = [];
@@ -45,6 +52,7 @@ in {
         Restart = "on-failure";
         TimeoutStopSec = 10;
 
+        EnvironmentFile = lib.mkIf (cfg.environmentFile != null) cfg.environmentFile;
         ExecStart = "${pkgs.promtail}/bin/promtail -config.file=${prettyJSON cfg.configuration} ${escapeShellArgs cfg.extraFlags}";
 
         ProtectSystem = "strict";
